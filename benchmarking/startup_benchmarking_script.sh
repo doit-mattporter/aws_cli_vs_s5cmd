@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# NOTE: This was run on a c7gn.16xlarge machine (200 Gbps throughput and 64 cores) with 12x 1024 GB gp3 EBS volumes in RAID0
+# NOTE: This was run on a c7gn.16xlarge machine (200 Gbps throughput and 64 cores) with 12x 1126 GB gp3 EBS volumes in RAID0
 # Each volume has 16,000 IOPS (max) and 1000 Mbps Throughput (max)
 # These altogether help ensure that resources such as network throughput, disk throughput, and available processing power are minimal bottlenecks
 # I ran this test using:
@@ -144,20 +144,20 @@ test_upload_download_and_copy() {
 
   # Calculate and display time differences and percentage differences
   upload_time_diff=$(echo "$aws_upload_seconds - $s5cmd_upload_seconds" | bc)
-  upload_percent_diff=$(echo "scale=2; ($aws_upload_seconds - $s5cmd_upload_seconds) * 100 / $aws_upload_seconds" | bc)
-  echo "Upload time difference (aws s3 cp vs s5cmd): aws s3 cp is ${upload_time_diff} seconds (${upload_percent_diff}%) slower" >> /mnt/raid/benchmarks_${AWS_CONFIGURATION}.txt
+  upload_fold_improvement=$(echo "scale=2; $aws_upload_seconds / $s5cmd_upload_seconds" | bc)
+  echo "Upload time difference (aws s3 cp vs s5cmd): aws s3 cp is ${upload_time_diff} seconds slower (~${upload_fold_improvement}X slower than s5cmd)" >> /mnt/raid/benchmarks_${AWS_CONFIGURATION}.txt
 
   download_time_diff=$(echo "$aws_download_seconds - $s5cmd_download_seconds" | bc)
-  download_percent_diff=$(echo "scale=2; ($aws_download_seconds - $s5cmd_download_seconds) * 100 / $aws_download_seconds" | bc)
-  echo "Download time difference (aws s3 cp vs s5cmd): aws s3 cp is ${download_time_diff} seconds (${download_percent_diff}%) slower" >> /mnt/raid/benchmarks_${AWS_CONFIGURATION}.txt
+  download_fold_improvement=$(echo "scale=2; $aws_download_seconds / $s5cmd_download_seconds" | bc)
+  echo "Download time difference (aws s3 cp vs s5cmd): aws s3 cp is ${download_time_diff} seconds slower (~${download_fold_improvement}X slower than s5cmd)" >> /mnt/raid/benchmarks_${AWS_CONFIGURATION}.txt
 
   same_region_copy_time_diff=$(echo "$aws_same_region_copy_seconds - $s5cmd_same_region_copy_seconds" | bc)
-  same_region_copy_percent_diff=$(echo "scale=2; ($aws_same_region_copy_seconds - $s5cmd_same_region_copy_seconds) * 100 / $aws_same_region_copy_seconds" | bc)
-  echo "Same-region bucket-to-bucket copy time difference (aws s3 cp vs s5cmd): aws s3 cp is ${same_region_copy_time_diff} seconds (${same_region_copy_percent_diff}%) slower" >> /mnt/raid/benchmarks_${AWS_CONFIGURATION}.txt
+  same_region_copy_fold_improvement=$(echo "scale=2; $aws_same_region_copy_seconds / $s5cmd_same_region_copy_seconds" | bc)
+  echo "Same-region bucket-to-bucket copy time difference (aws s3 cp vs s5cmd): aws s3 cp is ${same_region_copy_time_diff} seconds slower (~${same_region_copy_fold_improvement}X slower than s5cmd)" >> /mnt/raid/benchmarks_${AWS_CONFIGURATION}.txt
 
   other_region_copy_time_diff=$(echo "$aws_other_region_copy_seconds - $s5cmd_other_region_copy_seconds" | bc)
-  other_region_copy_percent_diff=$(echo "scale=2; ($aws_other_region_copy_seconds - $s5cmd_other_region_copy_seconds) * 100 / $aws_other_region_copy_seconds" | bc)
-  echo "Same-to-other-region bucket-to-bucket copy time difference (aws s3 cp vs s5cmd): aws s3 cp is ${other_region_copy_time_diff} seconds (${other_region_copy_percent_diff}%) slower" >> /mnt/raid/benchmarks_${AWS_CONFIGURATION}.txt
+  other_region_copy_fold_improvement=$(echo "scale=2; $aws_other_region_copy_seconds / $s5cmd_other_region_copy_seconds" | bc)
+  echo "Same-to-other-region bucket-to-bucket copy time difference (aws s3 cp vs s5cmd): aws s3 cp is ${other_region_copy_time_diff} seconds slower (~${other_region_copy_fold_improvement}X slower than s5cmd)" >> /mnt/raid/benchmarks_${AWS_CONFIGURATION}.txt
 }
 
 # Configure 12x EBS volumes to be in RAID0 configuration with an ext4 filesystem

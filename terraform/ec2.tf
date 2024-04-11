@@ -34,7 +34,7 @@ resource "aws_ebs_volume" "benchmark_volume" {
   count = 12
 
   availability_zone = aws_instance.benchmark_instance.availability_zone
-  size              = 1024
+  size              = 1126
   type              = "gp3"
   iops              = 16000
   throughput        = 1000

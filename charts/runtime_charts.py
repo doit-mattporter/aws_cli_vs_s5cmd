@@ -21,7 +21,7 @@ bar_filenames = [
 x = np.arange(len(categories))  # Label locations in bar charts
 width = 0.2  # Width of the bars in bar charts
 
-# Category + Operation data arrays in seconds, converted to minutes and then rounded
+# Category + Operation data arrays in seconds and then rounded
 s5cmd = np.round(
     np.array(
         [
@@ -56,7 +56,7 @@ aws_optimized = np.round(
 # Bar chart for each operation
 for i in range(4):
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.set_yscale('log')
+    ax.set_yscale("log")
     bars1 = ax.bar(x - width, s5cmd[:, i], width, label="s5cmd")
     bars2 = ax.bar(x, aws_default[:, i], width, label="AWS CLI Default")
     bars3 = ax.bar(x + width, aws_optimized[:, i], width, label="AWS CLI Optimized")
@@ -81,7 +81,9 @@ for i in range(4):
             )
 
     ax.set_ylabel("Runtime (seconds)")
-    ax.set_title(bar_titles[i] + "\n(AWS vs. s5cmd runtime difference shown in parentheses)")
+    ax.set_title(
+        bar_titles[i] + "\n(AWS vs. s5cmd runtime difference shown in parentheses)"
+    )
     ax.set_xticks(x)
     ax.set_xticklabels(categories)
     ax.legend()

@@ -9,6 +9,10 @@ resource "aws_instance" "benchmark_instance" {
     volume_type = "gp3"
   }
 
+  tags = {
+    Name = "benchmark_instance"
+  }
+
   user_data            = <<-EOF
               #!/bin/bash
               # Execute benchmarking script

@@ -211,7 +211,7 @@ echo "/dev/md0 /mnt/raid ext4 defaults,nofail,discard 0 0" | sudo tee -a /etc/fs
   aws --version
   echo ""
   echo "AWS CLI s3 Configuration (Defaults shown if not configured):"
-  echo "max_concurrency: $(aws configure get default.s3.max_concurrency || echo 'Determined dynamically, typically 10')"
+  echo "max_concurrent_requests: $(aws configure get default.s3.max_concurrent_requests || echo 'Determined dynamically, typically 10')"
   echo "multipart_threshold: $(aws configure get default.s3.multipart_threshold || echo '8MB')"
   echo "multipart_chunksize: $(aws configure get default.s3.multipart_chunksize || echo '8MB')"
   echo ""

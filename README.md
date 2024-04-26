@@ -1,7 +1,7 @@
 # aws_cli_vs_s5cmd
 ## Compare data transfer performance for the AWS CLI vs. s5cmd
 
-In order to reproduce the benchmarks mentioned in the Medium blog post [Boost S3 Data Transfers: Surpass AWS CLI Performance by Up to 80X](https://medium.com/@matt.porter_76759/boost-s3-data-transfers-surpass-aws-cli-performance-by-up-to-80x-f20ad286d6d7), follow the steps below:
+In order to reproduce the benchmarks mentioned in the Medium blog post [Save Time and Money on S3 Data Transfers: Surpass AWS CLI Performance by Up to 80X](https://engineering.doit.com/save-time-and-money-on-s3-data-transfers-surpass-aws-cli-performance-by-up-to-80x), follow the steps below:
 
 1. Install [Terraform](https://www.terraform.io/) and the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 2. Navigate to `terraform/` and run `terraform init`
@@ -12,4 +12,4 @@ In order to reproduce the benchmarks mentioned in the Medium blog post [Boost S3
 5. Run `terraform apply`
 6. Wait about 5 weeks. You will eventually see `benchmarks_default_aws_config.txt` and `benchmarks_optimized_aws_config.txt` uploaded to an S3 bucket named `benchmark-same-region-bucket-<RANDOM_STRING>`. These files will contain the benchmarking results for all scenarios covered in the blog.
     * Should you want to observe benchmarking progress live, SSH into the EC2 instance spun up by your Terraform apply command and run `clear && cat /mnt/raid/benchmarks*.txt`
-    * Should you want to speed up the benchmarking process, prior to running `terraform apply`, update the bootstrapping script for all instances where `run_tests` is invoked such that fewer than 4 TBs of files are created for benchmarking. For example, you could reduce the amount of data that has to be uploaded/downloaded/copied during benchmarking by 4X by changing `run_tests "large_files" 4096 "1G"` to `run_tests "large_files" 1024 "1G"`, as this reduces the quantity of 1 GB files created by 4X. AWS CLI commands are a huge bottleneck, so decreasing the total quantity of data that `aws s3 cp` commands have to run is the primary way to reduce overall benchmarking runtime.
+    * Should you want to speed up the benchmarking process, prior to running `terraform apply`, update `startup_benchmarking_script.sh` for all instances where `run_tests` is invoked such that fewer than 4 TBs of files are created for benchmarking. For example, you could reduce the amount of data that has to be uploaded/downloaded/copied during benchmarking by 4X by changing `run_tests "large_files" 4096 "1G"` to `run_tests "large_files" 1024 "1G"`, as this reduces the quantity of 1 GB files created by 4X. AWS CLI commands are a huge bottleneck; decreasing the total quantity of data that `aws s3 cp` commands have to run is the primary way to reduce overall benchmarking runtime.
